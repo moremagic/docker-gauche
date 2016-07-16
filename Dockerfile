@@ -7,8 +7,16 @@ RUN echo 'root:root' | chpasswd
 RUN sed -i 's/PermitRootLogin .*$/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 # gauche install
-RUN apt-get install -y vim curl wget git gauche*
+RUN apt-get install -y vim curl wget gauche*
 
-EXPOSE 22 8080
-CMD ["/usr/sbin/sshd", "-D"]
+#makiki install
+RUN apt-get install -y git make
+WORKDIR /root
+RUN git clone https://github.com/shirok/Gauche-makiki.git
+WORKDIR /root/Gauche-makiki
+RUN ./configure
+RUN make install
+
+EXPOSE 8012
+CMD ["gosh", "/root/Gauche-makiki/examples/basic.scm"]
 
